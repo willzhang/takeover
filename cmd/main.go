@@ -17,13 +17,20 @@
 package main
 
 import (
-	"fmt"
+	"os"
+	"path/filepath"
 
-	"github.com/IBM/go-repo-template/pkg/stringutil"
+	"github.com/vmware-tanzu/velero/pkg/cmd"
+	"k8s.io/klog"
+
+	"github.com/hexinatgithub/takeover/pkg/cmd/takeover"
 )
 
 func main() {
-	fmt.Println("Hello, go-repo-template!")
-	fmt.Println(stringutil.Reverse("!etalpmet-oper-og ,olleH"))
-	fmt.Printf("racecar is palindromic: %t\n", stringutil.IsPalindromic("racecar"))
+	defer klog.Flush()
+
+	baseName := filepath.Base(os.Args[0])
+
+	err := takeover.NewCommand(baseName).Execute()
+	cmd.CheckError(err)
 }

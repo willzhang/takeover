@@ -1,56 +1,17 @@
-<p align="center"><a href="http://35.227.205.240/?job=build_go-repo-template_postsubmit">
-<!-- prow build badge, godoc, and go report card-->
-<img alt="Build Status" src="http://prow.purple-chesterfield.com/badge.svg?jobs=build-go-repo-template-amd64-postsubmit">
-</a> <a href="https://godoc.org/github.com/IBM/go-repo-template"><img src="https://godoc.org/github.com/IBM/go-repo-template?status.svg"></a> <a href="https://goreportcard.com/report/github.com/IBM/go-repo-template"><img alt="Go Report Card" src="https://goreportcard.com/badge/github.com/IBM/go-repo-template" /></a> <a href="https://codecov.io/github/IBM/go-repo-template?branch=master"><img alt="Code Coverage" src="https://codecov.io/gh/IBM/go-repo-template/branch/master/graphs/badge.svg?branch=master" /></a> <a href="https://quay.io/repository/multicloudlab/go-repo-template-amd64"><img alt="Docker Repository on Quay" src="https://quay.io/repository/multicloudlab/go-repo-template/status" /></a></p>
+**文档内容**
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
-
-- [Top level title](#top-level-title)
-    - [What is the XXX](#what-is-the-xxx)
-    - [Community, discussion, contribution, and support](#community-discussion-contribution-and-support)
-    - [Getting Started](#getting-started)
-        - [Prerequisites](#prerequisites)
-        - [XXXXX](#xxxxx)
-        - [Trouble shooting](#trouble-shooting)
-    - [XXX References](#xxx-references)
+- [10086 移动云容器灾备切换服务](#10086-移动云容器灾备切换服务)
+  - [Getting Started](#getting-started)
+    - [Prerequisites](#prerequisites)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# Top level title
+# 10086 移动云容器灾备切换服务
 
-xxx...
-
-## What is the XXX
-
-xxx...
-
-## Community, discussion, contribution, and support
-
-Check the [CONTRIBUTING Doc](CONTRIBUTING.md) for how to contribute to the repo.
-
-You can reach the maintainers of this project at:
-
-- [#xxx on Slack](https://slack.com/signin?redir=%2Fmessages%2Fxxx)
-
-------
+本仓库主要功能是在移动云 k8s 集群宕机的时候，从存储的数据中恢复 k8s 在生产中的服务，恢复的数据包括 k8s 中的各种资源类型，PV 中保存的数据以提供给 POD 使用。
 
 ## Getting Started
 
 ### Prerequisites
 
-Check the [Development Doc](docs/development.md) for how to contribute to the repo.
-
-### XXXXX
-
-xxx...
-
-### Trouble shooting
-
-Please refer to [Trouble shooting documentation](docs/trouble_shooting.md) for further info.
-
-## XXX References
-
-If you have any further question about xxx, please refer to
-[XXX help documentation](docs/xxx_help.md) for further information.
+Velero 必须同时安装在生产和容灾环境，生产的 Velero 数据存储容灾环境可以访问

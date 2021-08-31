@@ -12,6 +12,9 @@
 *.out
 
 # Dependency directories (remove the comment below to include it)
-# vendor/
+vendor/
 
 build/_output/
+build/main
+
+.vscode/
