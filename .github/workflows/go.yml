@@ -3,7 +3,7 @@ name: Publish
 on:
   push:
     branches:
-      - '*'
+      - 'dev'
 env:
   DOCKERHUB_USERNAME: willdockerhub
   DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
