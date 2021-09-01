@@ -24,4 +24,4 @@ jobs:
         mv main build/takeover
 
     - name: Docker
-      run: docker build -f build/ -t willdockerhub/takeover .
+      run: docker build -t willdockerhub/takeover build/
