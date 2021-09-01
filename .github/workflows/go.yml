@@ -1,9 +1,10 @@
-name: Go
+name: Publish
 
 on:
   push:
-    branches:
-      - '*'
+    branches: [ dev ]
+  pull_request:
+    branches: [ dev ]
 
 jobs:
 
@@ -18,9 +19,11 @@ jobs:
         go-version: 1.17
 
     - name: Build
-      run: |
-        CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build cmd/main.go
-        mv main build/takeover
+      run:
+        CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o build/takeover cmd/main.go
 
     - name: Docker
       run: docker build -t willdockerhub/takeover build/
+ 
+    - name: Publish
+      run: docker push willdockerhub/takeover
