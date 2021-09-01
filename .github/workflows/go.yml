@@ -20,8 +20,7 @@ jobs:
     - name: Build
       run: |
         CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build cmd/main.go
-        mkdir build/bin
-        mv main build/bin/takeover
+        mv main build/takeover
 
     - name: Docker
       run: docker build -t willdockerhub/takeover build/
