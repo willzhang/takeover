@@ -22,7 +22,7 @@ jobs:
 
     - name: Login docker registry
       run: |
-        echo $DOCREGISTRY_PASSWORD | docker login -u $REGISTRY_USERNAME --password-stdin
+        echo $REGISTRY_PASSWORD | docker login -u $REGISTRY_USERNAME --password-stdin
         
     - name: Build
       run:
