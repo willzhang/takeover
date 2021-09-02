@@ -15,6 +15,6 @@
 
 FROM golang:1.16
 
-COPY ./takeover /etc/takeover
+COPY takeover /usr/local/bin
 
-ENTRYPOINT ["/etc/takeover"]
+ENTRYPOINT ["/usr/local/bin/takeover"]

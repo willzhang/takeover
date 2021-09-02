@@ -1,0 +1,35 @@
+name: Publish
+
+on:
+  push:
+    branches:
+      - 'dev'
+env:
+  REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
+  REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.17
+
+    - name: Login docker registry
+      run: |
+        echo $DOCREGISTRY_PASSWORD | docker login -u $REGISTRY_USERNAME --password-stdin
+        
+    - name: Build
+      run:
+        CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o build/takeover cmd/main.go
+
+    - name: Docker
+      run: docker build -t $REGISTRY_USERNAME/takeover build/
+ 
+    - name: Publish
+      run: docker push $REGISTRY_USERNAME/takeover
