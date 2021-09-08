@@ -10,6 +10,8 @@ import (
 	clientset "github.com/vmware-tanzu/velero/pkg/generated/clientset/versioned"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
+
+	"github.com/hexinatgithub/takeover/pkg/ecloud"
 )
 
 type env int
@@ -26,6 +28,8 @@ type Factory interface {
 	Client() (clientset.Interface, error)
 	// KubeClient returns a Kubernetes client which to be health checked.
 	KubeClient() (kubernetes.Interface, error)
+	// Cloud supplier client, use to increase kubernetes nodes, get cluster status
+	CloudClient() (ecloud.Scaler, error)
 	// SetClientQPS sets the Queries Per Second for a client.
 	SetClientQPS(float32)
 	// SetClientBurst sets the Burst for a client.
@@ -44,12 +48,14 @@ type factory struct {
 	baseName            string
 	clientQPS           float32
 	clientBurst         int
+	config              *TakeroverConfig
 }
 
-func NewFactory(name string) Factory {
+func NewFactory(name string, config *TakeroverConfig) Factory {
 	f := &factory{
 		flags:    pflag.NewFlagSet("", pflag.ContinueOnError),
 		baseName: name,
+		config:   config,
 	}
 
 	f.namespace = os.Getenv("VELERO_NAMESPACE")
@@ -104,6 +110,20 @@ func (f *factory) KubeClient() (kubernetes.Interface, error) {
 		return nil, errors.WithStack(err)
 	}
 	return kubeClient, nil
+}
+
+func (f *factory) CloudClient() (ecloud.Scaler, error) {
+	client, err := ecloud.NewEcloudClient(f.config.Host, f.config.AccessKey, f.config.SecretKey)
+	if err != nil {
+		return nil, err
+	}
+
+	scaler := ecloud.NewScaler(
+		*f.config.VMAutoScale.IncreaseNum,
+		f.config.VMAutoScale.VMTemplate,
+		client,
+	)
+	return scaler, nil
 }
 
 func (f *factory) SetClientQPS(qps float32) {

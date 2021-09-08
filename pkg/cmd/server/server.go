@@ -18,6 +18,7 @@ import (
 
 	"github.com/hexinatgithub/takeover/pkg/buildinfo"
 	"github.com/hexinatgithub/takeover/pkg/client"
+	"github.com/hexinatgithub/takeover/pkg/ecloud"
 	"github.com/hexinatgithub/takeover/pkg/healthcheck"
 	"github.com/hexinatgithub/takeover/pkg/restore"
 )
@@ -47,6 +48,8 @@ type server struct {
 	restorer restore.Interface
 	// healthCheck is used for check product kubenetes cluster health
 	healthCheck healthcheck.Interface
+	// scaler is used to scale kubernetes cluster
+	ecloudScaler ecloud.Scaler
 
 	ctx        context.Context
 	cancelFunc context.CancelFunc
@@ -118,6 +121,11 @@ func newserver(f client.Factory, config *serverConfig, logger *logrus.Logger) (*
 		return nil, err
 	}
 
+	s.ecloudScaler, err = f.CloudClient()
+	if err != nil {
+		return nil, err
+	}
+
 	s.ctx, s.cancelFunc = context.WithCancel(context.TODO())
 	s.healthCheck = healthcheck.NewHealthCheck(s.ctx, s.kubeClient, config.checkClusterPeriod, s.logger)
 	s.restorer = restore.NewRestorer(s.ctx, s.logger, s.veleroClient, s.namespace, config.scheduleName)
@@ -149,6 +157,13 @@ func (s *server) run() error {
 	for {
 		select {
 		case <-disaster:
+			logger.Infoln("begin grow disaster kubernetes cluster")
+			if err := s.ecloudScaler.Grow(s.ctx, logger); err != nil {
+				logger.Errorln("grow disaster kubernetes cluster error, continue process...")
+			} else {
+				logger.Errorln("grow disaster kubernetes cluster succeed.")
+			}
+
 			logger.Infoln("begin restore kubenetes cluster status.")
 			if err := s.restorer.Restore(); err != nil {
 				logger.Errorln("restore kubenetes cluster status occur error, abort")
