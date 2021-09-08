@@ -7,6 +7,7 @@ on:
 env:
   REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
   REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+  REGISTRY_URL: registry.cn-shenzhen.aliyuncs.com/images_mirror
 
 jobs:
 
@@ -22,14 +23,14 @@ jobs:
 
     - name: Login docker registry
       run: |
-        echo $REGISTRY_PASSWORD | docker login -u $REGISTRY_USERNAME --password-stdin
+        echo $REGISTRY_PASSWORD | docker login ${REGISTRY_URL} -u $REGISTRY_USERNAME --password-stdin
         
     - name: Build
       run:
         CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o build/takeover cmd/main.go
 
     - name: Docker
-      run: docker build -t $REGISTRY_USERNAME/takeover build/
+      run: docker build -t $REGISTRY_URL/takeover build/
  
     - name: Publish
-      run: docker push $REGISTRY_USERNAME/takeover
+      run: docker push $REGISTRY_URL/takeover
