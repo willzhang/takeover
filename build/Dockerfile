@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 
-FROM golang:alpine
+FROM golang:1.16
 
 COPY takeover /usr/local/bin
 
